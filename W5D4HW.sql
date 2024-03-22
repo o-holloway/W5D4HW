@@ -3,24 +3,34 @@
 --rental_rate, length, replace_cost, rating
 
 CREATE OR REPLACE PROCEDURE insert_film(
-    film_title VARCHAR(255),
-    film_description TEXT,
-    film_release_year YEAR,
-    film_language_id INT2,
-    film_rental_duration INT2,
-    film_rental_rate NUMERIC(4,2),
-    film_length INT2,
-    film_replace_cost NUMERIC(5,2),
-    film_rating mpaa_rating
+    title VARCHAR(255),
+    description TEXT,
+    release_year INTEGER,
+    language_id INTEGER,
+    rental_duration INTEGER,
+    rental_rate NUMERIC(4,2),
+    length INTEGER,
+    replacement_cost NUMERIC(5,2),
+    rating mpaa_rating
 ) 
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO film(title, description, release_year, language_id, rental_duration, rental_rate, length, replace_cost, rating)
-    VALUES(title, description, release_year, language_id, rental_duration, rental_rate, length, replace_cost, rating);
+    INSERT INTO film(title, description, release_year, language_id, rental_duration, rental_rate, length, replacement_cost, rating)
+    VALUES(title, description, release_year, language_id, rental_duration, rental_rate, length, replacement_cost, rating);
 END;
 $$;
 
+--Example using stored procedure
+CALL insert_film('John Wick: Chapter 4', 'A retired hit man is forced back into the underground world of assassins when he embarks on a merciless rampage to hunt down his adversaries.', 2023, 1, 3, 14.99, 169, 29.99, 'R');
+
+--View new movie inserted by stored function
+SELECT *
+FROM film 
+ORDER BY film_id DESC
+LIMIT 1;
+
+--===============================================================
 
 --Create a Stored Function that will take in a category_id and return the number of
 --films in that category
@@ -37,3 +47,8 @@ BEGIN
 	RETURN film_count;
 END;
 $$;
+
+--Example using stored function; returns 74
+--Category 15 contains 74 movies
+
+SELECT get_film_count('15');
